@@ -44,7 +44,7 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The first run downloads the embedding and reranking models. In the app, **Evidence only** makes no API calls. To generate and audit an LLM answer, select **LLM summary**, choose a provider, and enter your own key. The key is used for that session and is never written to this repository. The CLI also reads a local `.env` file; use `.env.example` as a template and never commit `.env`.
+The first run downloads the embedding and reranking models. In the app, **Evidence only** makes no API calls. To generate and audit an LLM answer, select **LLM summary** and choose a provider. A server-configured key is used when available; otherwise, you can enter your own key for that browser session. The CLI also reads a local `.env` file; use `.env.example` as a template and never commit `.env`.
 
 Providers currently supported by the CLI: Gemini, Groq, OpenRouter, Cerebras, and OpenAI. Free-tier quotas, usage charges, model availability, and data policies vary by provider; check the provider console before sending requests. Do not submit private customer data.
 
@@ -83,7 +83,7 @@ python -m unittest discover -s tests -v
 
 ## Deployment
 
-This repository is configured as a Docker-based Hugging Face Space running Streamlit on port 8501. The Space needs no embedded API key: the public app works in evidence-only mode and allows a reviewer to optionally provide their own key for an LLM summary. Add no API keys to repository files.
+This repository is configured as a Docker-based Streamlit app on Render. The public app works in evidence-only mode. The Render service can use a provider key stored in its environment settings for LLM summaries; keep keys out of repository files. Anyone with access to the public service can use the configured key through the app's LLM mode, subject to the provider's quotas and billing terms.
 
 ## Sources and tools
 

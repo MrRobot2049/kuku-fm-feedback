@@ -1,5 +1,6 @@
 """Streamlit UI for evidence-based Kuku FM review triage."""
 
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -44,7 +45,7 @@ with st.sidebar:
     mode = st.radio(
         "Choose how to answer",
         ["Evidence only", "LLM summary"],
-        help="Evidence-only mode makes no API calls. LLM mode uses the provider/key you enter.",
+        help="Evidence-only mode makes no API calls. LLM mode uses a server-configured key or one you enter.",
     )
     llm_config = None
     if mode == "LLM summary":
@@ -55,11 +56,15 @@ with st.sidebar:
             "openrouter": ("OPENROUTER_API_KEY", "openrouter/free"),
         }
         env_name, default_model = defaults[provider]
-        api_key = st.text_input(f"{provider.title()} API key", type="password")
+        api_key = os.getenv(env_name)
+        if api_key:
+            st.caption(f"Using the server-configured {provider.title()} API key.")
+        else:
+            api_key = st.text_input(f"{provider.title()} API key", type="password")
+            st.caption("The key you enter stays in this browser session and is sent to the provider you selected.")
         model = st.text_input("Model ID", value=default_model)
         if api_key:
             llm_config = {"provider": provider, "model": model, "api_key": api_key}
-        st.caption("The key stays in this browser session and is sent to the provider you selected.")
         st.caption("Check your provider's pricing and data-use terms before sending prompts.")
 
     st.divider()

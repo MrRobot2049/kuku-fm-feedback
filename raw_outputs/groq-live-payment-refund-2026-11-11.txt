@@ -1,0 +1,57 @@
+(.venv) ➜  kuku_fm_feedback python check_api.py
+Using provider: groq; model: openai/gpt-oss-20b
+Provider response: API_OK
+(.venv) ➜  kuku_fm_feedback python agentic_rag.py "What are listeners saying about unexpected payments and refund support?" --debug
+W1111 00:20:06.940000 13927 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights: 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 5041.41it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 105/105 [00:00<00:00, 6784.70it/s]
+
+[1] Planned search queries:
+ - What are listeners saying about unexpected payments and refund support?
+ - unexpected payments Kuku FM review
+ - refund support Kuku FM review
+ - Kuku FM unexpected charges
+ - Kuku FM refund issues
+[2] Query rewrite method: llm
+[3] Retrieved candidates; cross-encoder checked relevance, gated outliers, and reranked survivors.
+ R176: dense=0.443, rerank=-2.142, rating=1, text=An amount was automatically debited from my account via auto-pay without my clear consent. When I contacted their customer support right away to expla
+ R095: dense=0.592, rerank=-5.049, rating=1, text=Very Disappointing Experience – ₹1,198 Deducted Through AutoPay! I had a very bad experience with Kuku FM. ₹499 and ₹699 were deducted from my bank ac
+ R162: dense=0.750, rerank=-5.534, rating=1, text=Extremely disappointed with Kuku FM. I cancelled my ₹699 AutoPay, yet the amount was still deducted from my account. This is completely unacceptable. 
+ R129: dense=0.420, rerank=-6.064, rating=1, text=I never took any subscription but money is being debited via Autopay every month. there is no option to refund back in the app , customer support is n
+ R092: dense=0.682, rerank=-6.157, rating=1, text=⭐ 1 STAR – Very Disappointing! Kuku FM has deducted around ₹1,200 from my account through repeated AutoPay payments since January 2025. The latest ded
+ R183: dense=0.478, rerank=-6.631, rating=1, text=I had the worst experience. This app is a fraud app they will collect your money after cancelling the auto-pay.There is no customer support for call. 
+ R140: dense=0.539, rerank=-6.981, rating=1, text=this app refund policy is bad anyone don't use the app bad refund policy 😕 and no customer care support
+
+Answer
+------
+**Listeners’ reports on unexpected payments and refund support**
+
+- **Automatic deductions via Auto‑Pay**  
+  - R176: “An amount was automatically debited…without my clear consent.”  
+  - R095: “₹1,198 was deducted through AutoPay.”  
+  - R162: “I cancelled my ₹699 AutoPay, yet the amount was still deducted.”  
+  - R129: “Money is being debited via AutoPay every month.”  
+  - R092: “Kuku FM has deducted around ₹1,200 from my account through repeated AutoPay payments.”  
+  - R183: “They will collect your money after cancelling the auto‑pay.”  
+
+- **Customer‑support responses**  
+  - R176: “they completely refused to help and cited policy reasons.”  
+  - R162: “they keep sending the same repeated response…no refund.”  
+  - R129: “customer support is not responding.”  
+  - R183: “There is no customer support for call.”  
+  - R140: “this app refund policy is bad…no customer care support.”  
+
+These are individual reports; the evidence does not establish a broader trend or prevalence.
+
+Method: LLM synthesis with citation audit
+
+Evidence
+--------
+[R176] (1/5, 2026-10-05, embedding=0.443, rerank=-2.142) An amount was automatically debited from my account via auto-pay without my clear consent. When I contacted their customer support right away to explain the accidental payment and request a refund, they completely refused to help and cited policy reasons. There should be a fair refund option for accidental auto-renewals. Very poor customer experience and unhelpful support. Be extremely careful before linking your payment details to this app
+[R095] (1/5, 2026-10-23, embedding=0.592, rerank=-5.049) Very Disappointing Experience – ₹1,198 Deducted Through AutoPay! I had a very bad experience with Kuku FM. ₹499 and ₹699 were deducted from my bank account through AutoPay, resulting in a total loss of ₹1,198. I am extremely disappointed and frustrated with this experience. Customers work hard to earn their money, and unexpected automatic deductions can cause serious financial difficulties. I want a clear explanation of these charges and a full refund of my ₹1,198. Please take responsibility and
+[R162] (1/5, 2026-10-08, embedding=0.750, rerank=-5.534) Extremely disappointed with Kuku FM. I cancelled my ₹699 AutoPay, yet the amount was still deducted from my account. This is completely unacceptable. I have contacted customer support multiple times regarding my refund, but instead of actually resolving the issue, they keep sending the same repeated response. No proper explanation, no refund, and no real solution. If I cancelled AutoPay, why was ₹699 still charged? I want my money refunded immediately. Customer support should resolve customers
+[R129] (1/5, 2026-10-14, embedding=0.420, rerank=-6.064) I never took any subscription but money is being debited via Autopay every month. there is no option to refund back in the app , customer support is not responding. please stop this and refund my money.
+[R092] (1/5, 2026-10-23, embedding=0.682, rerank=-6.157) ⭐ 1 STAR – Very Disappointing! Kuku FM has deducted around ₹1,200 from my account through repeated AutoPay payments since January 2025. The latest deduction was ₹399 on 23 October 2026, but I cannot access the platform properly. Why should money be deducted when customers cannot use the service? I want a full explanation of every deduction and a refund of my money. I have stopped AutoPay to prevent further payments. I am sharing my experience so others can be careful before enabling AutoPay.
+[R183] (1/5, 2026-10-04, embedding=0.478, rerank=-6.631) I had the worst experience. This app is a fraud app they will collect your money after cancelling the auto-pay.There is no customer support for call. There is no refund
+[R140] (1/5, 2026-10-12, embedding=0.539, rerank=-6.981) this app refund policy is bad anyone don't use the app bad refund policy 😕 and no customer care support

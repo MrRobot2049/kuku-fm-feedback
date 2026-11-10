@@ -1,0 +1,35 @@
+W1111 00:40:53.412000 14595 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 12988.19it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/105 [00:00<?, ?it/s]Loading weights: 100%|██████████| 105/105 [00:00<00:00, 13457.66it/s]
+
+[1] Planned search queries:
+ - What technical reliability, app crashes, or login problems do reviewers report?
+ - What technical reliability, app crashes, or login problems do reviewers report? app crashes login sign in freeze bugs errors reliability technical issue
+[2] Query rewrite method: offline-rule-based
+[3] Retrieved candidates; cross-encoder checked relevance, gated outliers, and reranked survivors.
+ R012: dense=0.400, rerank=-7.623, rating=1, text=very bad app
+ R152: dense=0.332, rerank=-7.899, rating=1, text=worst app
+ R020: dense=0.444, rerank=-8.330, rating=1, text=very bad these apps
+ R128: dense=0.335, rerank=-8.504, rating=1, text=very bad app (घटिया बेकार फालतू है)
+ R019: dense=0.470, rerank=-8.594, rating=1, text=app is not working properly too much glitches there the app maker should work on them and try to make the negative feedback into positive
+ R150: dense=0.311, rerank=-8.684, rating=5, text=best app
+ R174: dense=0.361, rerank=-9.093, rating=1, text=Bad app from 😠😠😤😤
+ R017: dense=0.333, rerank=-9.263, rating=1, text=worst app ever 🤬🤬
+
+Answer
+------
+LLM synthesis unavailable; inspect the retrieved evidence below.
+
+Method: offline evidence-only mode
+
+Evidence
+--------
+[R012] (1/5, 2026-11-08, embedding=0.400, rerank=-7.623) very bad app
+[R152] (1/5, 2026-10-10, embedding=0.332, rerank=-7.899) worst app
+[R020] (1/5, 2026-11-06, embedding=0.444, rerank=-8.330) very bad these apps
+[R128] (1/5, 2026-10-14, embedding=0.335, rerank=-8.504) very bad app (घटिया बेकार फालतू है)
+[R019] (1/5, 2026-11-06, embedding=0.470, rerank=-8.594) app is not working properly too much glitches there the app maker should work on them and try to make the negative feedback into positive
+[R150] (5/5, 2026-10-10, embedding=0.311, rerank=-8.684) best app
+[R174] (1/5, 2026-10-06, embedding=0.361, rerank=-9.093) Bad app from 😠😠😤😤
+[R017] (1/5, 2026-11-07, embedding=0.333, rerank=-9.263) worst app ever 🤬🤬

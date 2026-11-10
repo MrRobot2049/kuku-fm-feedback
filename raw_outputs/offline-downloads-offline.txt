@@ -1,0 +1,35 @@
+W1111 00:40:44.086000 14583 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 28881.76it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/105 [00:00<?, ?it/s]Loading weights: 100%|██████████| 105/105 [00:00<00:00, 15321.53it/s]
+
+[1] Planned search queries:
+ - What do reviewers say about downloading episodes for offline listening?
+ - What do reviewers say about downloading episodes for offline listening? offline listening downloaded episodes saved content download
+[2] Query rewrite method: offline-rule-based
+[3] Retrieved candidates; cross-encoder checked relevance, gated outliers, and reranked survivors.
+ R179: dense=0.442, rerank=-7.292, rating=1, text=Earlier it was good but nowadays, all are the same in different titles. 699/90 days (2796/Yr) is too much cost instead we can download audio book thro
+ R010: dense=0.351, rerank=-8.786, rating=1, text=don't download 🤮
+ R029: dense=0.277, rerank=-9.757, rating=5, text=Love the short, gripping episodes.
+ R024: dense=0.263, rerank=-10.044, rating=4, text=The quality of the content is outstanding.
+ R101: dense=0.258, rerank=-10.116, rating=5, text=Smooth and steady playback.
+ R151: dense=0.247, rerank=-10.216, rating=1, text=only audio h
+ R059: dense=0.227, rerank=-10.432, rating=5, text=Really impressed with the content quality.
+ R165: dense=0.270, rerank=-10.547, rating=1, text=this app has very frustrated every episode have adv very disguise app
+
+Answer
+------
+LLM synthesis unavailable; inspect the retrieved evidence below.
+
+Method: offline evidence-only mode
+
+Evidence
+--------
+[R179] (1/5, 2026-10-05, embedding=0.442, rerank=-7.292) Earlier it was good but nowadays, all are the same in different titles. 699/90 days (2796/Yr) is too much cost instead we can download audio book through other modes, we suggest Kuku Team to reduce the cost as it is very high and most of the episodes are repeating in other episodes which consumes time. Both audio & video are too high to go for the subscription hence planning to move on and hope I'll get it sooner. Thanks
+[R010] (1/5, 2026-11-08, embedding=0.351, rerank=-8.786) don't download 🤮
+[R029] (5/5, 2026-11-05, embedding=0.277, rerank=-9.757) Love the short, gripping episodes.
+[R024] (4/5, 2026-11-05, embedding=0.263, rerank=-10.044) The quality of the content is outstanding.
+[R101] (5/5, 2026-10-21, embedding=0.258, rerank=-10.116) Smooth and steady playback.
+[R151] (1/5, 2026-10-10, embedding=0.247, rerank=-10.216) only audio h
+[R059] (5/5, 2026-10-29, embedding=0.227, rerank=-10.432) Really impressed with the content quality.
+[R165] (1/5, 2026-10-07, embedding=0.270, rerank=-10.547) this app has very frustrated every episode have adv very disguise app

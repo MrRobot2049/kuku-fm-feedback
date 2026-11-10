@@ -1,0 +1,35 @@
+W1111 00:40:21.586000 14541 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 16309.77it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/105 [00:00<?, ?it/s]Loading weights: 100%|██████████| 105/105 [00:00<00:00, 5756.96it/s]
+
+[1] Planned search queries:
+ - What problems do reviewers report with playback, buffering, or listening?
+ - What problems do reviewers report with playback, buffering, or listening? audio playback listening streaming download buffering sound
+[2] Query rewrite method: offline-rule-based
+[3] Retrieved candidates; cross-encoder checked relevance, gated outliers, and reranked survivors.
+ R101: dense=0.517, rerank=-6.922, rating=5, text=Smooth and steady playback.
+ R030: dense=0.203, rerank=-9.032, rating=1, text=bad
+ R062: dense=0.338, rerank=-9.482, rating=1, text=not video play
+ R151: dense=0.316, rerank=-9.564, rating=1, text=only audio h
+ R143: dense=0.217, rerank=-9.845, rating=5, text=video
+ R036: dense=0.416, rerank=-10.096, rating=1, text=not good very bad no video only audio i hate this
+ R024: dense=0.270, rerank=-10.250, rating=4, text=The quality of the content is outstanding.
+ R020: dense=0.233, rerank=-10.257, rating=1, text=very bad these apps
+
+Answer
+------
+LLM synthesis unavailable; inspect the retrieved evidence below.
+
+Method: offline evidence-only mode
+
+Evidence
+--------
+[R101] (5/5, 2026-10-21, embedding=0.517, rerank=-6.922) Smooth and steady playback.
+[R030] (1/5, 2026-11-03, embedding=0.203, rerank=-9.032) bad
+[R062] (1/5, 2026-10-28, embedding=0.338, rerank=-9.482) not video play
+[R151] (1/5, 2026-10-10, embedding=0.316, rerank=-9.564) only audio h
+[R143] (5/5, 2026-10-11, embedding=0.217, rerank=-9.845) video
+[R036] (1/5, 2026-11-02, embedding=0.416, rerank=-10.096) not good very bad no video only audio i hate this
+[R024] (4/5, 2026-11-05, embedding=0.270, rerank=-10.250) The quality of the content is outstanding.
+[R020] (1/5, 2026-11-06, embedding=0.233, rerank=-10.257) very bad these apps

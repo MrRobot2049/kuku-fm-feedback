@@ -1,0 +1,35 @@
+W1111 00:40:34.438000 14566 .venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 13094.49it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/105 [00:00<?, ?it/s]Loading weights: 100%|██████████| 105/105 [00:00<00:00, 16030.35it/s]
+
+[1] Planned search queries:
+ - What do reviewers say about finding stories and the available content?
+ - What do reviewers say about finding stories and the available content? content stories audiobooks audio shows series discovery recommendations
+[2] Query rewrite method: offline-rule-based
+[3] Retrieved candidates; cross-encoder checked relevance, gated outliers, and reranked survivors.
+ R154: dense=0.511, rerank=-5.005, rating=2, text=stories are not complete
+ R024: dense=0.439, rerank=-6.014, rating=4, text=The quality of the content is outstanding.
+ R177: dense=0.308, rerank=-6.892, rating=1, text=very poor story
+ R109: dense=0.384, rerank=-6.926, rating=4, text=it was very good because there have so many stories...when we feel bore then we listen all the stories..so its feel good.. thank you so much 😊
+ R059: dense=0.331, rerank=-7.235, rating=5, text=Really impressed with the content quality.
+ R112: dense=0.422, rerank=-8.375, rating=3, text=bring option to seperate story novels and other books, there should be a toggle for that..its so annoying to see a lot of such books while im looking 
+ R093: dense=0.286, rerank=-9.162, rating=5, text=I like 👍 this story
+ R026: dense=0.465, rerank=-9.200, rating=5, text=Discover short dramas
+
+Answer
+------
+LLM synthesis unavailable; inspect the retrieved evidence below.
+
+Method: offline evidence-only mode
+
+Evidence
+--------
+[R154] (2/5, 2026-10-09, embedding=0.511, rerank=-5.005) stories are not complete
+[R024] (4/5, 2026-11-05, embedding=0.439, rerank=-6.014) The quality of the content is outstanding.
+[R177] (1/5, 2026-10-05, embedding=0.308, rerank=-6.892) very poor story
+[R109] (4/5, 2026-10-18, embedding=0.384, rerank=-6.926) it was very good because there have so many stories...when we feel bore then we listen all the stories..so its feel good.. thank you so much 😊
+[R059] (5/5, 2026-10-29, embedding=0.331, rerank=-7.235) Really impressed with the content quality.
+[R112] (3/5, 2026-10-18, embedding=0.422, rerank=-8.375) bring option to seperate story novels and other books, there should be a toggle for that..its so annoying to see a lot of such books while im looking for the other
+[R093] (5/5, 2026-10-23, embedding=0.286, rerank=-9.162) I like 👍 this story
+[R026] (5/5, 2026-11-05, embedding=0.465, rerank=-9.200) Discover short dramas

@@ -1,0 +1,2 @@
+# Terminal captures are preserved byte-for-byte as submission raw outputs.
+raw_outputs/*.txt whitespace=-trailing

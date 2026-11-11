@@ -25,49 +25,57 @@ The collection script is `scrape_reviews.py`; the saved dataset is `kuku_fm_revi
 4. `cross-encoder/ms-marco-MiniLM-L6-v2` scores each retrieved child passage against the original question, removes large low-score outliers relative to the best match, and reranks the parent reviews. Answers and citations use the complete parent review. Cross-encoder scores are uncalibrated ranking scores, not probabilities.
 5. The LLM drafts an answer using retrieved reviews and IDs, then a second call checks citation support. If an LLM is unavailable, evidence-only mode still works.
 
-## Quick start: terminal
+## Run the project on your computer
 
-Requires Python 3.11 or newer and Git.
+Yes. To run it locally, first get a copy of the project files onto your computer. The simplest route is to clone the public GitHub repository. This downloads the code, review CSV, precomputed review vectors, and examples; it does **not** deploy or publish anything. You can also use GitHub's **Code → Download ZIP**, extract the ZIP, and open Terminal in the extracted `kuku-fm-feedback` folder. If you already have the project folder, skip this download step.
+
+You need Python 3.11 or newer and Git (only needed for the clone option). The commands below are for macOS/Linux Terminal. Run them one at a time:
 
 ```bash
 git clone --branch parent-child-retrieval https://github.com/MrRobot2049/kuku-fm-feedback.git
 cd kuku-fm-feedback
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-#### Evidence-only search (no API key)
+If you downloaded the ZIP or already have the folder, open Terminal there and start with `python3 -m venv .venv`; then run the remaining install commands. Keep the terminal window open. The `.venv` is a local Python environment for this project.
+
+### Choose how to run it
+
+**Option A: Evidence-only search (no API key).** In the same Terminal window, with `.venv` activated:
 
 ```bash
 python agentic_rag.py "What do reviewers say about payment problems?" --offline --debug
 ```
 
-#### LLM summary with Groq
-
-Copy `.env.example` to `.env`, replace the placeholder with your own Groq API key, then run a question without `--offline`:
+**Option B: LLM summary using your Groq API key.** Get your own key from Groq, then copy the safe example file and open `.env` in a text editor:
 
 ```bash
 cp .env.example .env
-# Edit .env and set GROQ_API_KEY to your key
+open -e .env
+```
+
+Replace the placeholder value for `GROQ_API_KEY` with your key, save the file, and run:
+
+```bash
 python agentic_rag.py "What do reviewers say about payment problems?" --debug
 ```
 
-The CLI reads `.env` automatically. **Never commit `.env` or put a real key in `.env.example`.** The checked-in `.env.example` is a safe template. On Render, the hosted website uses the `GROQ_API_KEY` secret configured for the service; visitors do not need to enter a key. Anyone using the public LLM summary mode consumes the service owner's Groq quota, so share the URL accordingly.
+The CLI reads `.env` automatically. `.env` is ignored by Git; never commit or share it. `.env.example` contains placeholders only and is safe to keep in GitHub. LLM summary mode sends the question and retrieved public review text to Groq and uses your key/quota. Evidence-only mode does not call Groq.
 
-#### Run the web UI locally
-
-After activating the virtual environment and configuring `.env` if you want summaries:
+**Option C: Open the local web interface.** With `.venv` activated, run:
 
 ```bash
 streamlit run app.py
 ```
 
-Open the local URL printed in the terminal. Choose **Evidence only** for a no-key search or **LLM summary** to use the configured Groq key.
+Wait for Streamlit to print a **Local URL**, usually `http://localhost:8501`, then open that address in your browser. Choose **Evidence only** to search without an API key or **LLM summary** to use the Groq key in `.env`. Stop the local server with `Control-C` in Terminal.
 
-On first search, the bi-encoder and cross-encoder still need to load; the checked-in vectors only skip embedding all review passages. This app can exceed Render Free's 512 MB memory limit while loading its neural models. See [the free-tier deployment note](#deployment).
+The first run downloads the bi-encoder and cross-encoder model weights and loads both models into memory. The checked-in vectors skip embedding the review corpus again, but the query encoder and reranker still need their model files. Allow time and disk space for that first model download; this neural setup can exceed Render Free's 512 MB memory limit. See [the deployment note](#deployment).
 
-Groq usage, model availability, and data policies can change; check Groq's current terms and quotas before use. Do not submit private customer data.
+Groq model availability, quotas, and data policies can change; check Groq's current terms before use. Do not submit private customer data.
 
 ## Automated tests
 

@@ -30,9 +30,9 @@ The collection script is `scrape_reviews.py`; the saved dataset is `kuku_fm_revi
 ## How the assistant works
 
 1. An LLM rewrites the question into a few search queries. If no LLM is configured, token-based rules add simple terminology variants.
-2. `sentence-transformers/all-MiniLM-L6-v2` embeds the reviews and query variants. Corpus embeddings are cached locally and keyed by a content hash.
-3. Cosine similarity retrieves up to 30 candidates across all queries.
-4. `cross-encoder/ms-marco-MiniLM-L6-v2` scores the original question against each candidate, removes large low-score outliers relative to the best match, and reranks the survivors. These are uncalibrated ranking scores, not probabilities.
+2. Each review is kept as a parent evidence record. Reviews longer than 48 words are split into overlapping 48-word child passages (12-word overlap); shorter reviews remain a single child. `sentence-transformers/all-MiniLM-L6-v2` embeds child passages and query variants, with child embeddings cached locally by content hash.
+3. Bi-encoder cosine similarity retrieves child passages across all queries, then keeps the best-matching child for each parent review.
+4. `cross-encoder/ms-marco-MiniLM-L6-v2` scores each retrieved child passage against the original question, removes large low-score outliers relative to the best match, and reranks the parent reviews. Answers and citations use the complete parent review. Cross-encoder scores are uncalibrated ranking scores, not probabilities.
 5. The LLM drafts an answer using retrieved reviews and IDs, then a second call checks citation support. If an LLM is unavailable, evidence-only mode still works.
 
 ## Run locally

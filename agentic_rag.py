@@ -47,6 +47,23 @@ class Candidate:
     date: str | None
     embedding_score: float
     rerank_score: float | None = None
+    match_text: str | None = None
+
+
+def child_chunks(text: str, chunk_words: int = 48, overlap_words: int = 12) -> list[str]:
+    """Split longer reviews into overlapping child passages."""
+    words = text.split()
+    if len(words) <= chunk_words:
+        return [text]
+    chunks = []
+    start = 0
+    while start < len(words):
+        end = min(start + chunk_words, len(words))
+        chunks.append(" ".join(words[start:end]))
+        if end == len(words):
+            break
+        start = end - overlap_words
+    return chunks
 
 
 def resolve_llm_config(overrides: dict[str, str] | None = None) -> tuple[str, str, str, str | None]:
@@ -146,7 +163,7 @@ def plan_queries(
 
 
 class DenseRetriever:
-    """Dense retrieval with a local embedding cache for this small corpus."""
+    """Bi-encoder child retrieval that returns full parent reviews as evidence."""
 
     def __init__(self, data_path: Path = DATA_PATH):
         from sentence_transformers import SentenceTransformer
@@ -155,21 +172,27 @@ class DenseRetriever:
         self.texts = self.df["content"].astype(str).tolist()
         if not self.texts:
             raise ValueError(f"No review text in {data_path}")
+        self.child_texts = []
+        self.child_parent_indices = []
+        for parent_index, text in enumerate(self.texts):
+            children = child_chunks(text)
+            self.child_texts.extend(children)
+            self.child_parent_indices.extend([parent_index] * len(children))
         self.model = SentenceTransformer(EMBEDDING_MODEL)
         CACHE_DIR.mkdir(exist_ok=True)
-        cache_input = f"{EMBEDDING_MODEL}\n" + "\n".join(self.texts)
+        cache_input = f"{EMBEDDING_MODEL}\n" + "\n".join(self.child_texts)
         digest = hashlib.sha256(cache_input.encode("utf-8")).hexdigest()[:12]
         cache_file = CACHE_DIR / f"review_embeddings_{digest}.npy"
         if cache_file.exists():
             self.embeddings = np.load(cache_file)
-            if len(self.embeddings) != len(self.texts):
+            if len(self.embeddings) != len(self.child_texts):
                 cache_file.unlink(missing_ok=True)
                 self.embeddings = None
         else:
             self.embeddings = None
         if self.embeddings is None:
             self.embeddings = self.model.encode(
-                self.texts,
+                self.child_texts,
                 normalize_embeddings=True,
                 convert_to_numpy=True,
                 show_progress_bar=True,
@@ -180,24 +203,32 @@ class DenseRetriever:
         vectors = self.model.encode(
             queries, normalize_embeddings=True, convert_to_numpy=True
         )
-        # Max pooling keeps a review if any rewritten query finds it strongly.
+        # Score child passages, then keep the best matching child per parent review.
         scores = np.max(vectors @ self.embeddings.T, axis=0)
-        indices = np.argsort(scores)[::-1][:top_k]
+        child_indices = np.argsort(scores)[::-1]
         candidates = []
-        for idx in indices:
-            row = self.df.iloc[int(idx)]
+        seen_parents = set()
+        for child_index in child_indices:
+            parent_index = self.child_parent_indices[int(child_index)]
+            if parent_index in seen_parents:
+                continue
+            seen_parents.add(parent_index)
+            row = self.df.iloc[parent_index]
             rating = row.get("score", "")
             date = str(row.get("at", ""))
             candidates.append(
                 Candidate(
-                    row_index=int(idx),
-                    citation=f"R{int(idx) + 1:03d}",
+                    row_index=parent_index,
+                    citation=f"R{parent_index + 1:03d}",
                     text=str(row["content"]).strip(),
                     rating=int(rating) if rating != "" else None,
                     date=date[:10] if date else None,
-                    embedding_score=float(scores[idx]),
+                    embedding_score=float(scores[child_index]),
+                    match_text=self.child_texts[int(child_index)],
                 )
             )
+            if len(candidates) >= top_k:
+                break
         return candidates
 
 
@@ -220,7 +251,7 @@ class RelevanceReranker:
             from sentence_transformers import CrossEncoder
 
             self.model = CrossEncoder(RERANKER_MODEL)
-        pairs = [(question, candidate.text) for candidate in candidates]
+        pairs = [(question, candidate.match_text or candidate.text) for candidate in candidates]
         scores = self.model.predict(pairs, show_progress_bar=False)
         for candidate, score in zip(candidates, scores):
             candidate.rerank_score = float(score)
@@ -338,7 +369,10 @@ def run(
         "rewrite_method": rewrite_method,
         "answer_method": answer_method,
         "answer": answer,
-        "evidence": [asdict(item) for item in ranked],
+        "evidence": [
+            {key: value for key, value in asdict(item).items() if key != "match_text"}
+            for item in ranked
+        ],
     }
 
 

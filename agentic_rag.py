@@ -26,6 +26,7 @@ ROOT = Path(__file__).parent
 load_dotenv(ROOT / ".env")
 DATA_PATH = ROOT / "kuku_fm_reviews_en_in.csv"
 CACHE_DIR = ROOT / ".cache"
+INDEX_DIR = ROOT / "artifacts"
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 RERANKER_MODEL = os.getenv("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L6-v2")
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "auto").lower()
@@ -64,6 +65,12 @@ def child_chunks(text: str, chunk_words: int = 48, overlap_words: int = 12) -> l
             break
         start = end - overlap_words
     return chunks
+
+
+def embedding_index_digest(texts: list[str], model_name: str = EMBEDDING_MODEL) -> str:
+    """Return a stable key for cached child embeddings."""
+    cache_input = f"{model_name}\n" + "\n".join(texts)
+    return hashlib.sha256(cache_input.encode("utf-8")).hexdigest()[:12]
 
 
 def resolve_llm_config(overrides: dict[str, str] | None = None) -> tuple[str, str, str, str | None]:
@@ -180,16 +187,16 @@ class DenseRetriever:
             self.child_parent_indices.extend([parent_index] * len(children))
         self.model = SentenceTransformer(EMBEDDING_MODEL)
         CACHE_DIR.mkdir(exist_ok=True)
-        cache_input = f"{EMBEDDING_MODEL}\n" + "\n".join(self.child_texts)
-        digest = hashlib.sha256(cache_input.encode("utf-8")).hexdigest()[:12]
+        digest = embedding_index_digest(self.child_texts)
+        stored_file = INDEX_DIR / f"review_child_embeddings_{digest}.npy"
         cache_file = CACHE_DIR / f"review_embeddings_{digest}.npy"
-        if cache_file.exists():
-            self.embeddings = np.load(cache_file)
-            if len(self.embeddings) != len(self.child_texts):
-                cache_file.unlink(missing_ok=True)
-                self.embeddings = None
-        else:
-            self.embeddings = None
+        self.embeddings = None
+        for embeddings_file in (stored_file, cache_file):
+            if embeddings_file.exists():
+                candidate = np.load(embeddings_file, mmap_mode="r")
+                if len(candidate) == len(self.child_texts):
+                    self.embeddings = candidate
+                    break
         if self.embeddings is None:
             self.embeddings = self.model.encode(
                 self.child_texts,

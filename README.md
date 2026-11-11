@@ -1,13 +1,3 @@
----
-title: Kuku FM Review Triage
-emoji: 🎧
-colorFrom: blue
-colorTo: purple
-sdk: docker
-app_port: 8501
-pinned: false
----
-
 # Kuku FM listener feedback triage
 
 An evidence-first prototype for turning public Kuku FM Google Play reviews into a concise, cited feedback brief.
@@ -30,36 +20,62 @@ The collection script is `scrape_reviews.py`; the saved dataset is `kuku_fm_revi
 ## How the assistant works
 
 1. An LLM rewrites the question into a few search queries. If no LLM is configured, token-based rules add simple terminology variants.
-2. Each review is kept as a parent evidence record. Reviews longer than 48 words are split into overlapping 48-word child passages (12-word overlap); shorter reviews remain a single child. `sentence-transformers/all-MiniLM-L6-v2` embeds child passages and query variants, with child embeddings cached locally by content hash.
+2. Each review is kept as a parent evidence record. Reviews longer than 48 words are split into overlapping 48-word child passages (12-word overlap); shorter reviews remain a single child. `sentence-transformers/all-MiniLM-L6-v2` embeds child passages and query variants. The precomputed corpus child vectors are checked into `artifacts/`, so the review corpus does not need to be re-embedded on first use.
 3. Bi-encoder cosine similarity retrieves child passages across all queries, then keeps the best-matching child for each parent review.
 4. `cross-encoder/ms-marco-MiniLM-L6-v2` scores each retrieved child passage against the original question, removes large low-score outliers relative to the best match, and reranks the parent reviews. Answers and citations use the complete parent review. Cross-encoder scores are uncalibrated ranking scores, not probabilities.
 5. The LLM drafts an answer using retrieved reviews and IDs, then a second call checks citation support. If an LLM is unavailable, evidence-only mode still works.
 
-## Run locally
+## Run the project on your computer
+
+Yes. To run it locally, first get a copy of the project files onto your computer. The simplest route is to clone the public GitHub repository. This downloads the code, review CSV, precomputed review vectors, and examples; it does **not** deploy or publish anything. You can also use GitHub's **Code → Download ZIP**, extract the ZIP, and open Terminal in the extracted `kuku-fm-feedback` folder. If you already have the project folder, skip this download step.
+
+You need Python 3.11 or newer and Git (only needed for the clone option). The commands below are for macOS/Linux Terminal. Run them one at a time:
 
 ```bash
+git clone --branch parent-child-retrieval https://github.com/MrRobot2049/kuku-fm-feedback.git
+cd kuku-fm-feedback
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+```
+
+If you downloaded the ZIP or already have the folder, open Terminal there and start with `python3 -m venv .venv`; then run the remaining install commands. Keep the terminal window open. The `.venv` is a local Python environment for this project.
+
+### Choose how to run it
+
+**Option A: Evidence-only search (no API key).** In the same Terminal window, with `.venv` activated:
+
+```bash
+python agentic_rag.py "What do reviewers say about payment problems?" --offline --debug
+```
+
+**Option B: LLM summary using your Groq API key.** Get your own key from Groq, then copy the safe example file and open `.env` in a text editor:
+
+```bash
+cp .env.example .env
+open -e .env
+```
+
+Replace the placeholder value for `GROQ_API_KEY` with your key, save the file, and run:
+
+```bash
+python agentic_rag.py "What do reviewers say about payment problems?" --debug
+```
+
+The CLI reads `.env` automatically. `.env` is ignored by Git; never commit or share it. `.env.example` contains placeholders only and is safe to keep in GitHub. LLM summary mode sends the question and retrieved public review text to Groq and uses your key/quota. Evidence-only mode does not call Groq.
+
+**Option C: Open the local web interface.** With `.venv` activated, run:
+
+```bash
 streamlit run app.py
 ```
 
-The first run downloads the embedding and reranking models. In the app, **Evidence only** makes no API calls. To generate and audit an LLM answer, select **LLM summary** and choose a provider. A server-configured key is used when available; otherwise, you can enter your own key for that browser session. The CLI also reads a local `.env` file; use `.env.example` as a template and never commit `.env`.
+Wait for Streamlit to print a **Local URL**, usually `http://localhost:8501`, then open that address in your browser. Choose **Evidence only** to search without an API key or **LLM summary** to use the Groq key in `.env`. Stop the local server with `Control-C` in Terminal.
 
-Providers currently supported by the CLI: Gemini, Groq, OpenRouter, Cerebras, and OpenAI. Free-tier quotas, usage charges, model availability, and data policies vary by provider; check the provider console before sending requests. Do not submit private customer data.
+The first run downloads the bi-encoder and cross-encoder model weights and loads both models into memory. The checked-in vectors skip embedding the review corpus again, but the query encoder and reranker still need their model files. Allow time and disk space for that first model download; this neural setup can exceed Render Free's 512 MB memory limit. See [the deployment note](#deployment).
 
-## Run the CLI
-
-```bash
-python check_api.py
-python agentic_rag.py "What are listeners saying about unexpected payments and refund support?" --debug
-```
-
-No-key evidence-only example:
-
-```bash
-python agentic_rag.py "What are listeners saying about playback problems?" --offline --debug
-```
+Groq model availability, quotas, and data policies can change; check Groq's current terms before use. Do not submit private customer data.
 
 ## Automated tests
 
@@ -83,7 +99,7 @@ python -m unittest discover -s tests -v
 
 ## Deployment
 
-This repository is configured as a Docker-based Streamlit app on Render. The public app works in evidence-only mode. The Render service can use a provider key stored in its environment settings for LLM summaries; keep keys out of repository files. Anyone with access to the public service can use the configured key through the app's LLM mode, subject to the provider's quotas and billing terms.
+The web UI is a Docker-based Streamlit service. Set `GROQ_API_KEY` as a secret in the hosting provider's environment settings; do not upload `.env` or commit a real key. The public app is intended as a demo. Render Free provides 512 MB RAM, and this app's local bi-encoder plus cross-encoder exceeded that limit during a live request. The precomputed corpus vectors remove the document-embedding step, but the query encoder and reranker still load into the service process. Use a host with more memory or move model inference to a separate service before relying on the live app.
 
 ## Sources and tools
 
